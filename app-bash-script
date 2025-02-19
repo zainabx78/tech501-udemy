@@ -1,4 +1,8 @@
+#!/bin/bash
+
+
 # Suppresses prompts
+set -e
 export DEBIAN_FRONTEND=noninteractive
 
 # Update and upgrade packages
@@ -10,7 +14,7 @@ apt-get upgrade -y
 echo "Installing Nginx..."
 sudo DEBIAN_FRONTEND=noninteractive apt install -yq nginx
 
-# Instal nodejs
+# Install nodejs
 echo "Installing Node.js..."
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y nodejs
@@ -56,7 +60,7 @@ cd /home/ubuntu/repo/app
 sudo npm install
 npm audit fix
 sudo npm install pm2 -g
-export DB_HOST=mongodb://172.31.52.59:27017/posts
+export DB_HOST=mongodb://172.31.48.154:27017/posts
 node seeds/seed.js
 pm2 start app.js
 
