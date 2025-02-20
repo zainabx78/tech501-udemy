@@ -3,6 +3,17 @@
 
 ![alt text](<../Images/Screenshot 2025-02-20 113434.png>)
 
+## Why the manual process isn't ideal
+
+- Time-consuming process for every new instance.
+- Prone to human errors during setup.
+- Difficult to ensure consistency across multiple deployments.
+- Requires SSH access and manual intervention.
+- Slows down recovery in case of instance failure.
+- Inefficient for scaling when deploying multiple instances.
+
+## The automated process using bash scripts and user data 
+
 In this project, I created 3 bash scripts for my 2-tier app deployment. 
 These scripts include:
 - [prov-app.sh](app-bash-script)

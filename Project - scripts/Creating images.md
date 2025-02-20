@@ -11,12 +11,9 @@
 
 2. Once vm's from the scripts are properly working (db is running and app is accessible with posts page), make the images from them:
 
-![](<Images/Screenshot 2025-02-20 103039.png>)
-
-
-![alt text](<Images/Screenshot 2025-02-20 103310.png>)
-
-![alt text](<Images/Screenshot 2025-02-20 103408.png>)
+![alt text](<../Images/Screenshot 2025-02-20 103039.png>)
+![alt text](<../Images/Screenshot 2025-02-20 103310.png>)
+![alt text](<../Images/Screenshot 2025-02-20 103408.png>)
 
 ## Launch instances from those AMI's.
 
@@ -36,4 +33,4 @@ pm2 start app.js
 This private IP in the bash script will overwrite the one in the userdata in the image. 
 
 
-![alt text](<Images/Screenshot 2025-02-20 110507.png>)
+![alt text](<../Images/Screenshot 2025-02-20 110507.png>)
