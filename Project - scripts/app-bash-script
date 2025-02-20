@@ -60,7 +60,7 @@ cd /home/ubuntu/repo/app
 sudo npm install
 npm audit fix
 sudo npm install pm2 -g
-export DB_HOST=mongodb://172.31.48.154:27017/posts
+export DB_HOST=mongodb://172.31.48.131:27017/posts
 node seeds/seed.js
 pm2 start app.js
 

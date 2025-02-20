@@ -1,4 +1,3 @@
-# CONTENTS:
+# Content
 
-1. [App bash script](app-bash-script)
-2. [Db bash script](db-bash-script)
+1. [Project 1 - Automating 2-tier app deployment using userdata and scripting](<Project - scripts>)
