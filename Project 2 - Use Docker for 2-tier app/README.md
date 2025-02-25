@@ -63,6 +63,7 @@ Alternatives to Docker
 
 - Tool for defining and managing multi-container Docker applications.
 - Simplifies development, testing and deployment by allowing users to define and run multiple services using a single YAML configuration file (docker-compose.yml).
+- Easier to use this docker compose file than run commands to deploy containers.
 - Key benefits include:
 
   - Easier Multi-Container Management: Simplifies starting and stopping multiple services (e.g., databases, APIs, frontends).
@@ -72,7 +73,17 @@ Alternatives to Docker
   - Scalability: Supports service scaling for different workloads.
 
 ### How to use Docker Compose:
-- 
+- Pre-installed with docker.
+
+### Docker commands:
+
+- Start the Application (Without Detached Mode) - `docker compose up`
+- Start the Application (In Detached Mode) - `docker compose up -d`
+- Without the `-d` flag, runs in the foreground, logs visible in real-time. Exiting the terminal stops services.
+- With the `-d` flag - runs in the background, freeing the terminal. Logs are accessible using docker compose logs.
+- Stop the application - `docker compose down`
+- Check Services Running with Docker Compose - `docker compose ps`
+- View Logs in Real-Time - `docker compose logs -f`
 
 # PROJECT - Using Docker For App Deployment
 

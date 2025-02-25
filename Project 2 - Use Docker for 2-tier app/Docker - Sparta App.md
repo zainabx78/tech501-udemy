@@ -72,3 +72,75 @@ Then, I ran my updated image as a container:
 ![alt text](<../Images/Screenshot 2025-02-24 150657.png>)
 
 ![alt text](<../Images/Screenshot 2025-02-24 150650.png>)
+
+## Using Docker Compose to run app and database
+
+1. Create docker-compose.yml file:
+```
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:7.0  # Use a stable MongoDB version
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    command: ["mongod", "--bind_ip", "0.0.0.0"]
+
+  app:
+    image: zainab7861/zainab-sparta-app:v3  # Replace with your actual image
+    container_name: app
+    restart: always
+    depends_on:
+      - mongo
+    environment:
+      DB_HOST: mongodb://mongo:27017/posts  # Set the correct MongoDB URI
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true  # Allows SSH-like interaction
+
+volumes:
+  mongo-data:
+
+
+```
+2. Run the file to create the containers- `docker compose up -d`
+
+![alt text](<../Images/Screenshot 2025-02-25 113458.png>)
+![alt text](<../Images/Screenshot 2025-02-25 113504.png>)
+
+3. SSH into the app container
+`docker exec -it app bash` or sh at the end
+
+4. When troublshooting and you change docker compose file, can restart the docker compose containers by stopping them and starting them again. 
+
+![alt text](<../Images/Screenshot 2025-02-25 120345.png>)
+
+## BLOCKER: App page working but not able to get posts page up:
+
+![alt text](<../Images/Screenshot 2025-02-25 123431.png>)
+
+![alt text](<../Images/Screenshot 2025-02-25 123440.png>)
+
+SOLVED: Changed the environment variable in docker compose to the one used previously for db connection instead of a different way. 
+- `DB_HOST: mongodb://mongo:27017/posts`
+
+- Once db connection is established, seed the db:
+- `docker exec -it app sh` - enter the app container
+- `npm install`
+
+
+![alt text](<../Images/Screenshot 2025-02-25 140546.png>)
+
+- Go to the posts URL - should be working. 
+
+![alt text](<../Images/Screenshot 2025-02-25 140520.png>)
+
+## Automated way of connecting to db:
+
+  `command: sh -c "npm install && node seeds/seed.js && npm start"`
+- Add this command to the end of app container configuration to reduce manually going into the container to seed the db. 
