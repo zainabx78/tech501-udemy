@@ -59,6 +59,21 @@ Alternatives to Docker
 - OpenShift (Enterprise Kubernetes distribution with container support)
 - Kubernetes (Primarily for container orchestration but works with different runtimes)
 
+## Docker compose 
+
+- Tool for defining and managing multi-container Docker applications.
+- Simplifies development, testing and deployment by allowing users to define and run multiple services using a single YAML configuration file (docker-compose.yml).
+- Key benefits include:
+
+  - Easier Multi-Container Management: Simplifies starting and stopping multiple services (e.g., databases, APIs, frontends).
+  - Declarative Configuration: Uses a YAML file to define services, networks, and volumes
+  - Portability: Enables easy environment replication across development, testing, and production.
+  - Dependency Management: Ensures all required services start in the correct order.
+  - Scalability: Supports service scaling for different workloads.
+
+### How to use Docker Compose:
+- 
+
 # PROJECT - Using Docker For App Deployment
 
 - Docker desktop already installed on my pc. 
