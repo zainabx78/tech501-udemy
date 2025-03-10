@@ -1,4 +1,4 @@
-# DevOps Project 8 – Use Docker for App Deployment
+# DevOps Project 2 – Use Docker for App Deployment
 
 ## Microservices
 
