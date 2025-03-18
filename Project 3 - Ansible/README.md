@@ -115,7 +115,7 @@ Make sure SSH for both VM's works.
 - `$ ssh -i ~/.ssh/aws-key-zainab.pem  ubuntu@54.229.138.82`
 
 2. Setup dependencies for the ansible controller and app vm (target node)
-   - **Install ansible on the controller vm:**
+## Install ansible on the controller vm:**
     ```
     sudo apt update
     sudo apt install software-properties-common
