@@ -115,11 +115,11 @@ deploy:
 ```
 - Save and exit (ctrl +x and then press enter to keep the same name for the file).
 - Deploy the application: `eb deploy --label 0.1.0`
-- 
+- Once health status is `OK` - open application url and it should be a different app page not the default congrats one. 
 
 
 ## Create an Amazon RDS database instance
-
+- Need to create a subnet group for this
 ## Connect to database from AWS cloudshell
 
 ## Migrate the postgreSQL database to Amazon RDS
