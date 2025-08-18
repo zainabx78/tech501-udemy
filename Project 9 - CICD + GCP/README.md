@@ -809,5 +809,6 @@ When pipeline runs:
 
 
 **Running pipeline:**
+-  `cd "Project 9 - CICD + GCP"`
 - `cd app`, `cd vynchronize`, `notepad .\index.html` - to edit the index file. 
-- This push will trigger jenkins pipeline. 
+- This push will trigger jenkins pipeline.
