@@ -656,11 +656,50 @@ CMD ["npm", "start"]
 
 4. Manage jenkins - system - change jenkins url value to something random - faster loading speed of jenkins.
 
+5. Add the app.yml script from minikube vm to your github so jenkins can pull it from there.
+- just create a new yml file and paste contents into it. 
 
+## In Github (local):
+When pushing repo with terraform - maybe be error due to large files - create .gitignore + do these commands:
+```
+git filter-repo --path "Project 9 - CICD + GCP/.terraform/pr... 
+  53 git filter-repo --path "Project 9 - CICD + GCP/.terraform/pr... 
+```
+- Make sure app is also in local repo - push it to remote repo too. 
 
 ## In jenkins online:
-- Create new job - pipeline job - paste script into the box for scripts. 
-- Jenkins file: 
+- Create new job - pipeline job.
+- Add following plugins from settings:
+  - Install `docker pipeline` plugin. 
+  - Install `kubernetes CLI` plugin. 
+  - Install `github integration` plugin. 
+  - Install `SSH Agent` plugin.
+  - Restart jenkins after these are installed. 
+
+## Credentials
+1. Dockerhub credentials into jenkins
+  - In dockerhub, create PAT to use for jenkins-
+  - account settings - Personal access tockens - generate new token. 
+  - Use the token and add it into jenkins credentials along with the docker username. 
+  - Username with password option. 
+2. Github credentials into jenkins
+  - Create new ssh key (.pub and private key).
+  - Im using premade keys - `aws-key` and `aws-key.pub`
+  - public key on github
+  - private key on jenkins (add creds - ssh username with private key).
+3. Kubernetes VM into jenkins
+  - Copy minikube vm private ssh key to jenkins vm so jenkins can access it
+  - Use the private key of the vm (the private key you use to access the kubernetes vm)
+  - `scp -i /c/Users/zaina/.ssh/id_rsa /c/Users/zaina/.ssh/id_rsa zainabfarooq001@34.29.22.3:~`
+  - Create folder for jenkins user - `sudo mkdir -p /var/lib/jenkins/.ssh `
+  - Copy key from home folder to jenkins .ssh folder
+  - `sudo cp /home/zainabfarooq001/id_rsa /home/lib/jenkins/.ssh/`
+  - Change permissions - `chmod 600 ~/id_rsa`
+  - `sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa`
+
+
+
+- Jenkins file: ``
 
 
 ```
@@ -741,3 +780,9 @@ EOF
 }
 ```
 
+## Running pipeline
+
+- Make change in dev branch - 
+- `git checkout -b dev`
+- `cd app`, `cd vynchronize`, `notepad .\index.html` - to edit the index file. 
+- This push will trigger jenkins pipeline. 
