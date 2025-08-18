@@ -656,11 +656,67 @@ CMD ["npm", "start"]
 
 4. Manage jenkins - system - change jenkins url value to something random - faster loading speed of jenkins.
 
+5. Add the app.yml script from minikube vm to your github so jenkins can pull it from there.
+- just create a new yml file and paste contents into it. 
 
+## In Github (local):
+When pushing repo with terraform - maybe be error due to large files - create .gitignore + do these commands:
+```
+git filter-repo --path "Project 9 - CICD + GCP/.terraform/pr... 
+  53 git filter-repo --path "Project 9 - CICD + GCP/.terraform/pr... 
+```
+- Make sure app is also in local repo - push it to remote repo too. 
 
 ## In jenkins online:
-- Create new job - pipeline job - paste script into the box for scripts. 
-- Jenkins file: 
+- Create new job - pipeline job.
+- Add following plugins from settings:
+  - Install `docker pipeline` plugin. 
+  - Install `kubernetes CLI` plugin. 
+  - Install `github integration` plugin. 
+  - Install `SSH Agent` plugin.
+  - Restart jenkins after these are installed. 
+
+## Credentials
+1. Dockerhub credentials into jenkins
+  - In dockerhub, create PAT to use for jenkins-
+  - account settings - Personal access tockens - generate new token. 
+  - Use the token and add it into jenkins credentials along with the docker username. 
+  - Username with password option. 
+2. Github credentials into jenkins
+  - Create new ssh key (.pub and private key).
+  - Im using premade keys - `aws-key` and `aws-key.pub`
+  - public key on github
+  - private key on jenkins (add creds - ssh username with private key).
+3. Kubernetes VM into jenkins
+  - Copy minikube vm private ssh key to jenkins vm so jenkins can access it
+  - Use the private key of the vm (the private key you use to access the kubernetes vm)
+  - `scp -i /c/Users/zaina/.ssh/id_rsa /c/Users/zaina/.ssh/id_rsa zainabfarooq001@34.29.22.3:~`
+  - Create folder for jenkins user - `sudo mkdir -p /var/lib/jenkins/.ssh `
+  - Copy key from home folder to jenkins .ssh folder
+  - `sudo cp /home/zainabfarooq001/id_rsa /home/lib/jenkins/.ssh/`
+  - Change permissions - `chmod 600 ~/id_rsa`
+  - `sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa`
+
+## Add webhook
+Github- your app repo
+- settings - webhooks
+- Add webhook:
+  - Payload Url: 
+    - The jenkins server ip goes in this.
+    - `http://34.29.22.3:8080/github-webhook/`
+    - Disable SSL verification
+    - Save.
+
+## Jenkins with kubernetes
+
+Minikube automatically creates a kubeconfig file under the current user (usually your own, like ubuntu or ec2-user). But Jenkins usually runs as a different user (like jenkins), and it won’t have access to your kubeconfig by default.
+
+Copy the kubeconfig to the jenkins user (on kubernetes vm).
+  - `sudo -i` - switch to root user if needed.
+  - `sudo mkdir -p /var/lib/jenkins/.kube` - create kube directory for Jenkins.
+  - `sudo cp /home/ubuntu/.kube/config /var/lib/jenkins/.kube/config` - copy config file from your current user to jenkins. 
+
+- Jenkins file: ``
 
 
 ```
@@ -669,28 +725,28 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'zainab7861/myapp'
-        TARGET_VM = '108.130.50.28'
+        TARGET_VM = '34.60.2.172'
     }
 
     stages {
         stage('Checkout dev') {
             steps {
                 git branch: 'dev',
-                    url: 'git@github.com:zainabx78/tech501-sparta-app-cicd.git',
-                    credentialsId: 'github-ssh-key'
+                    url: 'https://github.com/zainabx78/tech501-udemy.git',
+                    credentialsId: 'aws-key'
             }
         }
 
         stage('Merge dev into main') {
             steps {
-                sshagent(['github-ssh-key']) {
+                sshagent(['aws-key']) {
                     sh '''
                         git config user.email "jenkins@example.com"
                         git config user.name "Jenkins"
                         git checkout main
                         git pull origin main --rebase
                         git merge dev --no-ff -m "merged dev to main with jenkins"
-                        git remote set-url origin git@github.com:zainabx78/tech501-sparta-app-cicd.git
+                        git remote set-url origin git@github.com:zainabx78/tech501-udemy.git
                         git push origin main
                     '''
                 }
@@ -708,9 +764,9 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub password', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
-                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-creds') {
+                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub password') {
                             dockerImage.push()
                         }
                     }
@@ -724,13 +780,13 @@ pipeline {
                     def dockerImage = env.IMAGE_TAG
 
                     // Copy the K8s manifest file to the remote server
-                    sh "scp -i /var/lib/jenkins/.ssh/aws-key-zainab.pem k8s/sparta-app.yml ubuntu@${TARGET_VM}:/tmp/"
+                    sh "scp -i /var/lib/jenkins/.ssh/id_rsa Project\\ 9\\ -\\ CICD\\ +\\ GCP/app.yaml ubuntu@${TARGET_VM}:/home/ubuntu/"
 
                     // SSH into the remote server and apply the manifest & update the deployment image
                 sh """#!/bin/bash
-ssh -i /var/lib/jenkins/.ssh/aws-key-zainab.pem ubuntu@${TARGET_VM} <<EOF
-kubectl apply -f /tmp/sparta-app.yml
-kubectl set image deployment/nodejs-deployment nodejs-app=${dockerImage} --record
+ssh -i /var/lib/jenkins/.ssh/id_rsa ubuntu@${TARGET_VM} <<EOF
+kubectl apply -f /tmp/app.yaml
+kubectl set image deployment/app app=${dockerImage} --record
 EOF
 """
 
@@ -741,3 +797,17 @@ EOF
 }
 ```
 
+## Running pipeline
+
+- Make change in dev branch - 
+- `git checkout -b dev`
+- `git push origin dev`
+
+When pipeline runs:
+
+- Hostkey verification fails- Try this `sudo ssh-keyscan github.com | sudo tee -a /var/lib/jenkins/.ssh/known_hosts`
+
+
+**Running pipeline:**
+- `cd app`, `cd vynchronize`, `notepad .\index.html` - to edit the index file. 
+- This push will trigger jenkins pipeline. 
