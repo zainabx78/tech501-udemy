@@ -1,0 +1,1 @@
+Project[[:space:]]9[[:space:]]-[[:space:]]CICD[[:space:]]+[[:space:]]GCP/.terraform/providers/**/*.exe filter=lfs diff=lfs merge=lfs -text
